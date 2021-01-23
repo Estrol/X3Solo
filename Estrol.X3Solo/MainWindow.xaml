@@ -1,0 +1,92 @@
+﻿<Window x:Class="Estrol.X3Solo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Estrol.X3Solo"
+        mc:Ignorable="d"
+        Title="X3Solo" Closing="Window_Closing" UseLayoutRounding="True" WindowStyle="None" Background="Transparent" AllowsTransparency="True" Height="357" Width="276" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBox}" x:Key="clsBox">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="clsBtn">
+            <Setter Property="Background" Value="#FF4B4B4B"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#353535"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <ControlTemplate x:Key="clsTextBox" TargetType="{x:Type TextBoxBase}">
+            <Border x:Name="border" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="True">
+                <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="BorderBrush" TargetName="border" Value="Transparent"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="true">
+                    <Setter Property="BorderBrush" TargetName="border" Value="Transparent"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Resources>
+    <Border BorderBrush="Black" BorderThickness="2" Margin="10" CornerRadius="2">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="15" ShadowDepth="0"/>
+        </Border.Effect>
+        <Grid Background="#FF202121">
+            <Canvas Name="TopBar" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" Margin="0,0,0,316" Background="#FF131313">
+                <Label Content="X3Solo 1.8" Foreground="White" Height="24" Canvas.Top="-4" Width="77"/>
+                <Button Style="{StaticResource clsBtn}" Content="" Click="BtnExit" Canvas.Left="228" Width="24" RenderTransformOrigin="0.808,0.706" Height="16">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/Assets/Close_White_16x.png" Stretch="None" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Button.Background>
+                </Button>
+            </Canvas>
+            <Grid Name="m_main" Background="#FF202121" Visibility="Hidden" Margin="0,20,0,0">
+                <Button Style="{StaticResource clsBtn}" Click="ToggleAbout" Content="About" Foreground="White" HorizontalAlignment="Center" Margin="0,247,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>
+                <Button Style="{StaticResource clsBtn}" Click="ToggleSetting" Content="Settings" Foreground="White" HorizontalAlignment="Center" Margin="0,195,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="47" Width="232" BorderBrush="Black"/>
+                <Button Style="{StaticResource clsBtn}" Click="Run" Content="Start Game" Foreground="White" HorizontalAlignment="Center" Margin="0,145,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="45" Width="232" BorderBrush="Black"/>
+                <Label Content="Press Start Game to play O2-JAM" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Center" Margin="0,105,0,0" VerticalAlignment="Top" Width="232" Height="28"/>
+                <Label Content="X3Solo" FontSize="30" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="232" Height="50"/>
+                <Label Content="X3-JAM Solo Edition" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Center" Margin="0,50,0,0" VerticalAlignment="Top" Width="232"/>
+            </Grid>
+            <Grid Name="m_setting" Background="#FF202121" Visibility="Visible" Margin="0,20,0,0">
+                <Button Style="{StaticResource clsBtn}" Click="ToggleSetting" Content="Back to Menu" Foreground="White" HorizontalAlignment="Center" Margin="0,247,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>
+                <Label Content="Game/Server Port" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104" Height="26" Margin="6,5,0,0"/>
+                <TextBox Name="f_port" Template="{DynamicResource clsTextBox}" PreviewTextInput="f_PreviewTextInput" DataObject.Pasting="f_Pasting" HorizontalAlignment="Center" Margin="0,31,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727"/>
+                <Label Content="Character Name" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="98" Height="26" Margin="6,51,0,0"/>
+                <TextBox Name="f_name" Template="{DynamicResource clsTextBox}" PreviewTextInput="f_PreviewTextInput" DataObject.Pasting="f_Pasting" HorizontalAlignment="Center" Margin="0,77,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727"/>
+                <Label Content="Character Rank" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="92" Height="26" Margin="6,96,0,0"/>
+                <TextBox Name="f_rank" Template="{DynamicResource clsTextBox}" PreviewTextInput="f_PreviewTextInput" DataObject.Pasting="f_Pasting" HorizontalAlignment="Center" Margin="0,122,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727"/>
+                <Label Content="Character Level" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="92" Height="26" Margin="6,139,0,0"/>
+                <TextBox Name="f_level" Template="{DynamicResource clsTextBox}" PreviewTextInput="f_PreviewTextInput" DataObject.Pasting="f_Pasting" HorizontalAlignment="Center" Margin="0,165,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727"/>
+                <Button Style="{StaticResource clsBtn}" Click="ToggleCharacter" Content="Character Avatar Editor" Foreground="White" HorizontalAlignment="Center" Margin="0,196,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>
+            </Grid>
+            <Grid Name="m_about" Background="#FF202121" Visibility="Hidden" Margin="0,20,0,0">
+                <Button Style="{StaticResource clsBtn}" Click="ToggleAbout" Content="Back to Menu" Foreground="White" HorizontalAlignment="Center" Margin="0,247,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>
+                <Button Style="{StaticResource clsBtn}" Click="OpenConsole" Content="Open Developer Console" Foreground="White" HorizontalAlignment="Center" Margin="0,196,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>
+                <TextBox Name="m_about_us" Template="{DynamicResource clsTextBox}" IsReadOnly="False" AcceptsReturn="True" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727" Height="173"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
