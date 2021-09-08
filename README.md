@@ -32,4 +32,4 @@ This software licensed under [MIT License](/license.txt).
 
 This software using the code from the following repository to work 
 * O2MusicList SDK from [SirusDoma](https://github.com/SirusDoma/O2MusicList) under [MIT License](https://github.com/SirusDoma/O2MusicList/LICENSE) (For it's OJN SDK)
-* JamPresence SDK from [SirusDoma](https://github.com/SirusDoma/O2MusicList) under [MIT License](https://github.com/SirusDoma/JamPresence/LICENSE) (For it's Client State offsets)
+* StatefulXOR Decryption from [sebastian-heinz](https://github.com/sebastian-heinz/Arrowgene.Baf/blob/master/Arrowgene.Baf.Server/Packet/PacketFactory.cs) under [MIT License](https://github.com/sebastian-heinz/Arrowgene.Baf/LICENSE) (For it's packet decyption method)
