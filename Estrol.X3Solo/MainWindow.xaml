@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Estrol.X3Solo"
         mc:Ignorable="d"
-        Title="X3Solo" Closing="Window_Closing" UseLayoutRounding="True" WindowStyle="None" Background="Transparent" AllowsTransparency="True" Height="357" Width="276" WindowStartupLocation="CenterScreen">
+        Title="X3Solo" Closing="Window_Closing" UseLayoutRounding="True" WindowStyle="None" Background="Transparent" AllowsTransparency="True" Height="357" Width="276" WindowStartupLocation="CenterScreen"
+		xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
     <Window.Resources>
         <Style TargetType="{x:Type TextBox}" x:Key="clsBox">
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -55,7 +56,7 @@
         </Border.Effect>
         <Grid Background="#FF202121">
             <Canvas Name="TopBar" MouseLeftButtonDown="TopBar_MouseLeftButtonDown" Margin="0,0,0,316" Background="#FF131313">
-                <Label Content="X3Solo 1.8" Foreground="White" Height="24" Canvas.Top="-4" Width="77"/>
+                <Label Content="X3Solo 1.8 [1.0-r2]" Foreground="White" Height="24" Canvas.Top="-4" Width="127"/>
                 <Button Style="{StaticResource clsBtn}" Content="" Click="BtnExit" Canvas.Left="228" Width="24" RenderTransformOrigin="0.808,0.706" Height="16">
                     <Button.Background>
                         <ImageBrush ImageSource="/Assets/Close_White_16x.png" Stretch="None" RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -73,14 +74,11 @@
             <Grid Name="m_setting" Background="#FF202121" Visibility="Visible" Margin="0,20,0,0">
                 <Button Style="{StaticResource clsBtn}" Click="ToggleSetting" Content="Back to Menu" Foreground="White" HorizontalAlignment="Center" Margin="0,247,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>
                 <Label Content="Game/Server Port" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104" Height="26" Margin="6,5,0,0"/>
-                <TextBox Name="f_port" Template="{DynamicResource clsTextBox}" PreviewTextInput="f_PreviewTextInput" DataObject.Pasting="f_Pasting" HorizontalAlignment="Center" Margin="0,31,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727"/>
-                <Label Content="Character Name" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="98" Height="26" Margin="6,51,0,0"/>
-                <TextBox Name="f_name" Template="{DynamicResource clsTextBox}" PreviewTextInput="f_PreviewTextInput" DataObject.Pasting="f_Pasting" HorizontalAlignment="Center" Margin="0,77,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727"/>
-                <Label Content="Character Rank" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="92" Height="26" Margin="6,96,0,0"/>
-                <TextBox Name="f_rank" Template="{DynamicResource clsTextBox}" PreviewTextInput="f_PreviewTextInput" DataObject.Pasting="f_Pasting" HorizontalAlignment="Center" Margin="0,122,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727"/>
-                <Label Content="Character Level" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="92" Height="26" Margin="6,139,0,0"/>
-                <TextBox Name="f_level" Template="{DynamicResource clsTextBox}" PreviewTextInput="f_PreviewTextInput" DataObject.Pasting="f_Pasting" HorizontalAlignment="Center" Margin="0,165,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727"/>
-                <Button Style="{StaticResource clsBtn}" Click="ToggleCharacter" Content="Character Avatar Editor" Foreground="White" HorizontalAlignment="Center" Margin="0,196,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>
+                <TextBox Name="f_port" Template="{DynamicResource clsTextBox}" PreviewTextInput="FormPreviewTextInput" DataObject.Pasting="FormPasting" HorizontalAlignment="Center" Margin="0,31,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727" Height="20"/>
+                <Label Content="Character Name" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Width="98" Height="26" Margin="6,57,0,0"/>
+                <TextBox Name="f_name" Template="{DynamicResource clsTextBox}" DataObject.Pasting="FormPasting" HorizontalAlignment="Center" Margin="0,83,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Background="#FF171717" Foreground="White" SelectionBrush="#FF303030" BorderBrush="#FF272727" Height="21"/>
+                <Button Style="{StaticResource clsBtn}" Click="ToggleCharacter" Content="Advanced Settings" Foreground="White" HorizontalAlignment="Center" Margin="0,196,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>
+                <Label Content="OJNList, Character Settings in this button" HorizontalContentAlignment="Center" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" Width="232" Height="26" Margin="0,165,0,0"/>
             </Grid>
             <Grid Name="m_about" Background="#FF202121" Visibility="Hidden" Margin="0,20,0,0">
                 <Button Style="{StaticResource clsBtn}" Click="ToggleAbout" Content="Back to Menu" Foreground="White" HorizontalAlignment="Center" Margin="0,247,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.518" Height="46" Width="232" BorderBrush="Black"/>

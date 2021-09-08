@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#pragma warning disable CA1711
+
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Estrol.X3Solo.Server.Data {
     public class OJN {
@@ -49,7 +48,7 @@ namespace Estrol.X3Solo.Server.Data {
         public int BlockOffsetHx { get; set; }
         public int CoverOffset { get; set; }
         public byte KeyMode { get; set; } = 7;
-        public Encoding CharacterEncoding { get; set; } = Encoding.GetEncoding("big5");
+        public Encoding CharacterEncoding { get; set; } = Encoding.GetEncoding(949);
         public string Source { get; set; }
         public bool Encrypted { get; set; }
 

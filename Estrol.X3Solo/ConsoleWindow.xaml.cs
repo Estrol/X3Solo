@@ -1,14 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
-using Estrol.X3Solo.Modules;
-using Estrol.X3Solo.Server;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace Estrol.X3Solo {
     /// <summary>

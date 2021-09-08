@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Estrol.X3Solo.Server.Data {
+﻿namespace Estrol.X3Solo.Server.Data {
     public enum OJNGenre {
         Ballad = 0,
         Rock = 1,

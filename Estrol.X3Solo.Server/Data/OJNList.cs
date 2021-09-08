@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Estrol.X3Solo.Server.Data {
     public class OJNList {
-        private Dictionary<int, OJN> headers;
+        private readonly Dictionary<int, OJN> headers;
 
         public OJNFileFormat Version { get; set; }
 
-        public bool Modified { get; private set; } = false;
+        public bool Modified { get; private set; }
 
         public int Count => headers.Count;
 
@@ -62,10 +61,10 @@ namespace Estrol.X3Solo.Server.Data {
 
         public int Optimize() {
             int count = headers.Count;
-            var data = headers.Values.GroupBy(h => h.TitleString).Select(h => h.First()).ToArray();
+            OJN[] data = headers.Values.GroupBy(h => h.TitleString).Select(h => h.First()).ToArray();
 
             headers.Clear();
-            foreach (var header in data) {
+            foreach (OJN header in data) {
                 headers.Add(header.Id, header);
             }
 
@@ -73,7 +72,7 @@ namespace Estrol.X3Solo.Server.Data {
         }
 
         public void SetCharacterEncoding(Encoding encoding) {
-            foreach (var header in headers.Values) {
+            foreach (OJN header in headers.Values) {
                 header.CharacterEncoding = encoding;
             }
         }

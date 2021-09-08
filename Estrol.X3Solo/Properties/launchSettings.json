@@ -2,7 +2,7 @@
   "profiles": {
     "Estrol.X3Solo": {
       "commandName": "Project",
-      "workingDirectory": "G:\\Games\\O2JamINT"
+      "nativeDebugging": true
     }
   }
 }

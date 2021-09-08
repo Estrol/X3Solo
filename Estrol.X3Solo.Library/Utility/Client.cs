@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Estrol.X3Solo.Library.Packet;
+using Estrol.X3Solo.Library.Server;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -9,6 +11,8 @@ namespace Estrol.X3Solo.Library {
         public static int MAXSIZE = 12000;
         public TCPServer m_server;
         public Socket m_socket;
+        public XORStateful.Stateful m_stateful;
+        public PacketHandler PacketHandler;
 
         public byte[] m_raw;
         public byte[] m_data;

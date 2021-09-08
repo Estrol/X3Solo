@@ -1,18 +1,19 @@
-﻿using System;
+﻿#pragma warning disable IDE0058
+
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
-using Estrol.X3Solo.Modules;
 using Estrol.X3Solo.Server;
 using Estrol.X3Solo.Library;
 using System.Threading.Tasks;
 using System.Text;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
+using Estrol.X3Solo.Parser;
 
 namespace Estrol.X3Solo {
     /// <summary>
@@ -22,13 +23,10 @@ namespace Estrol.X3Solo {
         private readonly Configuration config;
         private readonly Main server;
         private Process GameProc;
-        private Presence presence;
-
-        // Flag
-        private bool loop;
 
         // UI
-        private ConsoleWindow UiConsole;
+        private readonly ConsoleWindow UiConsole;
+        private MoreSettingWindow UiMoreSetting;
 
         public MainWindow() {
             InitializeComponent();
@@ -52,15 +50,11 @@ namespace Estrol.X3Solo {
             m_about_us.Text = "                            X3Solo\r\n   " +
                 "               X3-JAM Solo Version\r\n         Not supp" +
                 "ort Multiplayer Session\r\n\r\nSupported Client Version" +
-                "s\r\n- 9you O2-JAM 1.8 and 1.5\r\n\r\nDeveloper:\r\n - " +
-                "Estrol (Programing)\r\n - MatVeiQaaa (Reverse engineeri" +
-                "ng)";
+                "s\r\n- 9you O2-JAM 1.8 and 1.5";
 
             server = new Main();
-            f_port.Text = server.m_config.ServerPort.ToString();
-            f_name.Text = server.m_config.Name.ToString();
-            f_rank.Text = server.m_config.Rank.ToString();
-            f_level.Text = server.m_config.Level.ToString();
+            f_port.Text = string.Format(CultureInfo.CurrentCulture, "{0}", server.m_config.ServerPort);
+            f_name.Text = server.m_config.Name;
 
             server.OnError += (object o, Exception e) => {
                 if (GameProc != null) {
@@ -85,13 +79,29 @@ namespace Estrol.X3Solo {
                 GameProc?.Kill();
                 Environment.Exit(500);
             };
+
+            server.OnCError += (object o) => {
+                MessageBoxResult res = MessageBox.Show("Seems the game crashing when you're enjoying the game -_-\nOpen help page?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.No, MessageBoxOptions.DefaultDesktopOnly);
+                if (res == MessageBoxResult.Yes) {
+                    ProcessStartInfo ps = new("https://estrol.space/game/x3solo/troubleshot") {
+                        UseShellExecute = true,
+                        Verb = "open"
+                    };
+
+                    Process.Start(ps);
+                }
+            };
         }
 
         private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             DragMove();
         }
 
+        private bool IsClicked = false;
         private void Run(object sender, RoutedEventArgs e) {
+            if (IsClicked) return;
+
+            IsClicked = true;
             if (GameProc != null) {
                 MessageBox.Show("The Game Already Started!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -106,12 +116,19 @@ namespace Estrol.X3Solo {
                 string IPAddr = "127.0.0.1";
                 int GamePort = config.ServerPort;
                 ClientCheck conf = new();
-                conf.GetVersion();
+                conf.GetVersion("OTwo.exe");
+
+                if (!File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", conf.OJNList))) {
+                    bool result = OJNListGenerator.GenerateOJNList(conf);
+                    if (!result) {
+                        return;
+                    }
+                }
 
                 ProcessStartInfo ps = new() {
                     UseShellExecute = true,
                     WindowStyle = ProcessWindowStyle.Normal,
-                    FileName = "OTwo.exe",
+                    FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OTwo.exe"),
                     Arguments = "1 127.0.0.1 o2jam/patch "
                         + $"{IPAddr}:80 "
                         + "1 1 1 1 1 1 1 1 "
@@ -133,113 +150,49 @@ namespace Estrol.X3Solo {
                     server.Stop();
                 } else {
                     try {
-                        GameProc.WaitForInputIdle();
-
-                        if (server.Version == "1.8") {
-                            Log.Write("Detected client version 1.8, success patching!");
-                            bool success = CryptModule.RektO2JamCrypt(GameProc);
-                            if (!success) {
-                                bool retry = CryptModule.RektO2JamCrypt(GameProc);
-                                if (!retry) {
-                                    throw CryptModule.Error;
-                                }
-                            }
-                        } else if (server.Version == "1.5") {
-                            Log.Write("Detected client version 1.5, not required to patch!");
-                        } else {
-                            throw new PatchException("Unknown client version!");
-                        }
-
-                        bool result = SetWindowText(GameProc.MainWindowHandle, $"{GameProc.MainWindowTitle} [with X3Solo Beta-0.5 for {server.Version} Client]");
+                        bool result = GameProc.WaitForInputIdle();
                         if (!result) {
-                            int err = Marshal.GetLastWin32Error();
-                            Log.Write($"Window title rename failed: {result} {err}");
+                            MessageBox.Show("Failed to start the game!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
-
-                        loop = true;
-                        presence = new(GameProc, conf.Music);
-                        Task.Run(LoopTask);
 
                         GameProc.WaitForExit();
-
-                        loop = false;
-                        presence = null;
                         server.Stop();
                         GameProc = null;
                     } catch (Exception e) {
                         ProcessUtil.SuspendProcess(GameProc.Id);
 
-                        if (e is PatchException err) {
-                            MessageBox.Show("Failed to patch:\n" + err.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
-                            GameProc?.Kill();
-                            server.Stop();
-                            GameProc = null;
-                        } else {
-                            MessageBox.Show(e.Message + "\n\nProgram will now exit.", "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
-                            GameProc?.Kill();
-                            Environment.Exit(0);
-                        }
+                        MessageBox.Show(e.Message + "\n\nProgram will now exit.", "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                        GameProc?.Kill();
+                        Environment.Exit(0);
                     }
                 }
             });
 
             ts.Start();
-        }
-
-        private void LoopTask() {
-            var defcached = $"{GameProc.MainWindowTitle} [with X3Solo Beta-0.5 for {server.Version} Client]";
-            var cached = "";
-            while (loop) {
-                try {
-                    var state = presence.Update();
-
-                    if (state.IsPlaying) {
-                        if (cached != state.Chart.Title) {
-                            cached = state.Chart.Title;
-
-                            bool result = SetWindowText(GameProc.MainWindowHandle, $"{GameProc.MainWindowTitle} - {state.Chart.Artist} - {state.Chart.Title} [{state.Chart.DifficultyText}] [with X3Solo Beta-0.5 for {server.Version} Client]");
-                            if (!result) {
-                                int err = Marshal.GetLastWin32Error();
-                                Log.Write($"Window title rename failed: {result} {err}");
-                            }
-                        }
-                    } else {
-                        if (cached != defcached) {
-                            cached = defcached;
-
-                            bool result = SetWindowText(GameProc.MainWindowHandle, cached);
-                            if (!result) {
-                                int err = Marshal.GetLastWin32Error();
-                                Log.Write($"Window title rename failed: {result} {err}");
-                            }
-                        }
-                    }
-                } catch (Exception) {
-                    Log.Write("Presence failed!");
-                }
-
-                Thread.Sleep(1000);
-            }
+            IsClicked = false;
         }
 
         private void ToggleSetting(object sender, RoutedEventArgs e) {
             if (m_setting.Visibility == Visibility.Hidden) {
                 m_setting.Visibility = Visibility.Visible;
             } else {
+                config.Name = f_name.Text;
+                config.ServerPort = int.Parse(f_port.Text, CultureInfo.CurrentCulture);
                 m_setting.Visibility = Visibility.Hidden;
             }
         }
 
         private void ToggleAbout(object sender, RoutedEventArgs e) {
-            if (m_about.Visibility == Visibility.Hidden) {
-                m_about.Visibility = Visibility.Visible;
-            } else {
-                m_about.Visibility = Visibility.Hidden;
-            }
+            m_about.Visibility = m_about.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
         }
 
         private void ToggleCharacter(object sender, RoutedEventArgs e) {
+            if (UiMoreSetting == null) {
+                UiMoreSetting = new(config);
+            }
 
+            UiMoreSetting.Show();
         }
 
         private void OpenConsole(object sender, RoutedEventArgs e) {
@@ -247,8 +200,7 @@ namespace Estrol.X3Solo {
         }
 
         private static readonly Regex regex = new("[^0-9.-]+");
-
-        private void f_Pasting(object sender, DataObjectPastingEventArgs e) {
+        private void FormPasting(object sender, DataObjectPastingEventArgs e) {
             if (e.DataObject.GetDataPresent(typeof(string))) {
                 string txt = (string)e.DataObject.GetData(typeof(string));
 
@@ -260,7 +212,7 @@ namespace Estrol.X3Solo {
             }
         }
 
-        private void f_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+        private void FormPreviewTextInput(object sender, TextCompositionEventArgs e) {
             e.Handled = regex.IsMatch(e.Text);
         }
 
@@ -274,16 +226,10 @@ namespace Estrol.X3Solo {
             GameProc?.Kill();
             Environment.Exit(0);
         }
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        static extern bool SetWindowText(IntPtr hWnd, string text);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
     }
 
     public class MultiTextWriter : TextWriter {
-        private IEnumerable<TextWriter> writers;
+        private readonly IEnumerable<TextWriter> writers;
         public MultiTextWriter(IEnumerable<TextWriter> writers) {
             this.writers = writers.ToList();
         }
@@ -292,32 +238,34 @@ namespace Estrol.X3Solo {
         }
 
         public override void Write(char value) {
-            foreach (var writer in writers)
+            foreach (TextWriter writer in writers) {
                 writer.Write(value);
+            }
         }
 
         public override void Write(string value) {
-            foreach (var writer in writers)
+            foreach (TextWriter writer in writers) {
                 writer.Write(value);
+            }
         }
 
         public override void Flush() {
-            foreach (var writer in writers)
+            foreach (TextWriter writer in writers) {
                 writer.Flush();
+            }
         }
 
         public override void Close() {
-            foreach (var writer in writers)
+            foreach (TextWriter writer in writers) {
                 writer.Close();
+            }
         }
 
-        public override Encoding Encoding {
-            get { return Encoding.ASCII; }
-        }
+        public override Encoding Encoding => Encoding.ASCII;
     }
 
     public class ControlWriter : TextWriter {
-        private ConsoleWindow textbox;
+        private readonly ConsoleWindow textbox;
         public ControlWriter(ConsoleWindow textbox) {
             this.textbox = textbox;
         }
@@ -330,8 +278,11 @@ namespace Estrol.X3Solo {
             textbox.Write(value);
         }
 
-        public override Encoding Encoding {
-            get { return Encoding.ASCII; }
-        }
+        public override Encoding Encoding => Encoding.ASCII;
+    }
+
+    public class OJNInfo {
+        public string Name { set; get; }
+        public int OJN { set; get; }
     }
 }

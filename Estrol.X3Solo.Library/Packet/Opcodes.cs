@@ -1,9 +1,10 @@
-﻿namespace Estrol.X3Solo.Server {
+﻿namespace Estrol.X3Solo.Library.Packet {
 
     /// <summary>
     /// O2-JAM Client TCP opcode, All taken from sniffting through wireshark.
     /// </summary>
-    public enum Packets : ushort {
+    public enum Opcodes : ushort {
+        Unknown = 0,
         Disconnect = 0xfff0,
         Login = 0x03ef,
         Connect = 0x03f1,
@@ -14,7 +15,7 @@
         EnterCH = 0x03ec,
         GetRoom = 0x07d2,
         GetChar = 0x07d0,
-        Timest = 0x13A4,
+        GetCash = 0x13A4,
         ClientList = 0x07e8,
         TCPPing = 0x1771,
         LeaveCH = 0x07e5,

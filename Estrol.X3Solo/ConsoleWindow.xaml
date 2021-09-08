@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Estrol.X3Solo"
         mc:Ignorable="d"
-        Title="Console" Closing="Window_Closing" UseLayoutRounding="True" WindowStyle="None" Background="Transparent" AllowsTransparency="True" Height="327" Width="534" WindowStartupLocation="CenterScreen">
+        Title="Console" Closing="Window_Closing" UseLayoutRounding="True" WindowStyle="None" Background="Transparent" AllowsTransparency="True" Height="327" Width="534" WindowStartupLocation="CenterScreen"
+		xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
     <Window.Resources>
         <Style TargetType="{x:Type TextBox}" x:Key="clsBox">
             <Setter Property="BorderBrush" Value="Transparent"/>

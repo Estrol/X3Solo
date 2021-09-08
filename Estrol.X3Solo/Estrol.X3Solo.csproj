@@ -1,15 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <StartupObject>Estrol.X3Solo.Program</StartupObject>
+    <StartupObject></StartupObject>
     <Nullable>annotations</Nullable>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <AssemblyName>X3Solo</AssemblyName>
     <Company>Estrol's Developer Studio</Company>
-    <Description>O2-JAM Server Emulation for client version 1.5 and 1.8</Description>
+    <Description>O2-JAM Server Emulation for client version 1.8</Description>
+    <ApplicationIcon></ApplicationIcon>
+    <PackageProjectUrl>https://github.com/Estrol/X3Solo</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Estrol/X3Solo</RepositoryUrl>
+    <Authors>Estrol</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -31,10 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <ProjectReference Include="..\Estrol.X3Solo.Crypt\Estrol.X3Solo.Modules.csproj">
-		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	  </ProjectReference>
 	  <ProjectReference Include="..\Estrol.X3Solo.Library\Estrol.X3Solo.Library.csproj">
 		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
